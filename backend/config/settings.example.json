@@ -1,0 +1,22 @@
+{
+  "sending_limits": {
+    "smtp_daily_per_account_default": 500,
+    "rolling_window_hours": 24,
+    "_comment": "Free consumer Gmail (@gmail.com) SMTP is typically ~500 recipients per rolling 24h per account (Google may lower new/low-trust accounts). Google Workspace is higher—raise defaults or set per-account daily_send_limit."
+  },
+  "accounts": [
+    {
+      "email": "your.project.email1@gmail.com",
+      "password": "your16letterapppassword",
+      "daily_send_limit": 500
+    },
+    {
+      "email": "your.project.email2@gmail.com",
+      "password": "another16letterpassword"
+    }
+  ],
+  "email_settings": {
+    "subject": "Your Certificate of Participation",
+    "body_template": "Hello {name},\n\nThank you for participating. Please find your certificate attached.\n\nBest regards,\nThe Team"
+  }
+}

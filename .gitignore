@@ -1,16 +1,57 @@
-# Ignore configuration and secrets
+# ==================================================
+# SECRETS — never commit real Gmail accounts or passwords
+# ==================================================
+backend/config/*.json
+!backend/config/settings.example.json
+
+# Root-level config (if you add one later)
 config/settings.json
-backend/config/settings.json
+**/settings.local.json
+**/secrets.json
+**/*credentials*.json
+
+# Environment / tokens
 **/.env
 .env
+.env.*
+!.env.example
 
-# Ignore local data and generated certificates
-data/
+# ==================================================
+# DATA — queue, contacts, DB, attachments (local only)
+# ==================================================
 backend/data/
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# CSV/PDF often contain PII; keep local only
 *.csv
 *.pdf
 
-# Ignore Python cache
+# ==================================================
+# PYTHON
+# ==================================================
 __pycache__/
 **/__pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# ==================================================
+# OS / editors
+# ==================================================
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo

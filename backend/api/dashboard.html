@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certipatch Dashboard</title>
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-weight: 600;
+            font-size: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--border);
+        }
+
+        button.primary {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        button.primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        button.danger {
+            background-color: transparent;
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        
+        button.danger:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .card-title {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success);
+            width: 0%;
+            transition: width 0.5s ease-out;
+        }
+
+        .table-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-sent {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-failed {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .email-text {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .account-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        #engine-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--text-muted);
+            margin-right: 8px;
+            box-shadow: 0 0 10px transparent;
+        }
+
+        #engine-status.running {
+            background-color: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><span id="engine-status"></span> Certipatch Dashboard</h1>
+            <div class="controls">
+                <button id="btn-load-csv" onclick="loadCsv()">Load CSV</button>
+                <button id="btn-clear-done" onclick="clearCompleted()">Clear completed</button>
+                <button id="btn-start" class="primary" onclick="startEngine()">Start Engine</button>
+                <button id="btn-pause" class="danger" onclick="pauseEngine()">Pause</button>
+            </div>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Emails Sent (all time)</div>
+                <div class="card-value" id="stat-sent">0</div>
+                <div class="card-subtitle">out of <span id="stat-total">0</span> rows in queue · <span id="stat-window-sent">0</span> in last <span id="stat-window-h">24</span>h</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="stat-progress"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Pending Jobs</div>
+                <div class="card-value" id="stat-pending">0</div>
+                <div class="card-subtitle">emails waiting to be dispatched</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Failed</div>
+                <div class="card-value" style="color: var(--danger)" id="stat-failed">0</div>
+                <div class="card-subtitle">failed attempts</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Send quota left (rolling)</div>
+                <div class="card-value" id="stat-quota">0</div>
+                <div class="card-subtitle"><span id="stat-quota-used">0</span> / <span id="stat-quota-cap">0</span> used in last <span id="stat-quota-window">24</span>h · <span id="stat-accounts">0</span> account(s) · free Gmail ≈500/account/day</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Recent Jobs Overview</h2>
+                <button onclick="fetchData()" style="padding: 0.4rem 0.8rem; font-size: 0.875rem;">Refresh</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Recipient</th>
+                        <th>File</th>
+                        <th>Sender Account</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="jobs-body">
+                    <tr><td colspan="4" style="text-align: center; color: var(--text-muted)">Loading data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const fetchOpts = { cache: 'no-store' };
+
+        async function fetchData() {
+            try {
+                // Fetch stats
+                const statsRes = await fetch('/jobs/stats', fetchOpts);
+                const stats = await statsRes.json();
+                
+                document.getElementById('stat-sent').innerText = stats.sent;
+                document.getElementById('stat-total').innerText = stats.total;
+                document.getElementById('stat-pending').innerText = stats.pending;
+                document.getElementById('stat-failed').innerText = stats.failed;
+                if (typeof stats.sent_in_window === 'number') {
+                    document.getElementById('stat-window-sent').innerText = stats.sent_in_window;
+                }
+                if (typeof stats.window_hours === 'number') {
+                    document.getElementById('stat-window-h').innerText = stats.window_hours;
+                }
+                
+                const percent = stats.total > 0 ? (stats.sent / stats.total) * 100 : 0;
+                document.getElementById('stat-progress').style.width = `${percent}%`;
+
+                // Fetch quota
+                const quotaRes = await fetch('/jobs/quota', fetchOpts);
+                const quota = await quotaRes.json();
+                document.getElementById('stat-quota').innerText = quota.remaining != null ? quota.remaining : '—';
+                document.getElementById('stat-accounts').innerText = quota.accounts != null ? quota.accounts : '0';
+                document.getElementById('stat-quota-used').innerText = quota.used_in_window != null ? quota.used_in_window : '0';
+                document.getElementById('stat-quota-cap').innerText = quota.total != null ? quota.total : '0';
+                document.getElementById('stat-quota-window').innerText = quota.window_hours != null ? quota.window_hours : '24';
+
+                // Fetch system status
+                const statusRes = await fetch('/status', fetchOpts);
+                const status = await statusRes.json();
+                const indicator = document.getElementById('engine-status');
+                if (status.is_sending) {
+                    indicator.classList.add('running');
+                } else {
+                    indicator.classList.remove('running');
+                }
+
+                // Fetch jobs list
+                const jobsRes = await fetch('/jobs/list', fetchOpts);
+                const jobs = await jobsRes.json();
+                const tbody = document.getElementById('jobs-body');
+                
+                if (jobs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted)">No jobs found in database. Load CSV to begin.</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = '';
+                jobs.forEach(job => {
+                    const statusClass = `status-${job.status.toLowerCase()}`;
+                    const account = job.account_used ? `<span class="account-text">${job.account_used}</span>` : '<span class="account-text">-</span>';
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>
+                            <div style="font-weight: 500">${job.name}</div>
+                            <div class="email-text">${job.email}</div>
+                        </td>
+                        <td class="email-text">${job.certificate_file}</td>
+                        <td>${account}</td>
+                        <td><span class="status-badge ${statusClass}">${job.status}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (err) {
+                console.error("Failed to fetch data:", err);
+            }
+        }
+
+        async function loadCsv() {
+            if(confirm("Load contacts from CSV into the database queue?")) {
+                await fetch('/jobs/load-csv', { method: 'POST', ...fetchOpts });
+                fetchData();
+            }
+        }
+
+        async function clearCompleted() {
+            if (!confirm("Remove all Sent and Failed jobs from the database? Pending rows are kept.")) return;
+            const res = await fetch('/jobs/clear-completed', { method: 'POST', ...fetchOpts });
+            let msg = 'Done.';
+            try {
+                const data = await res.json();
+                if (data.message) msg = data.message;
+            } catch (_) {}
+            alert(msg);
+            fetchData();
+        }
+
+        async function startEngine() {
+            await fetch('/engine/start', { method: 'POST', ...fetchOpts });
+            fetchData();
+        }
+
+        async function pauseEngine() {
+            await fetch('/engine/pause', { method: 'POST', ...fetchOpts });
+            fetchData();
+        }
+
+        // Initial load and poll every 3 seconds
+        fetchData();
+        setInterval(fetchData, 3000);
+    </script>
+</body>
+</html>

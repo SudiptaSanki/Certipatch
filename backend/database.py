@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, inspect, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 import os
@@ -27,7 +27,25 @@ class CertificateJob(Base):
     account_used = Column(String, nullable=True)
     error_message = Column(String, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
+    # Set when status becomes Sent; used for rolling send limits per account
+    sent_at = Column(DateTime, nullable=True)
+
+def _migrate_schema():
+    """Add columns introduced after first release (SQLite has no ALTER IF NOT EXISTS)."""
+    try:
+        inspector = inspect(engine)
+        if not inspector.has_table("certificate_jobs"):
+            return
+        cols = {c["name"] for c in inspector.get_columns("certificate_jobs")}
+        if "sent_at" not in cols:
+            with engine.begin() as conn:
+                conn.execute(
+                    text("ALTER TABLE certificate_jobs ADD COLUMN sent_at DATETIME")
+                )
+    except Exception as e:
+        print(f"[WARN] certificate_jobs migrate skipped: {e}")
 
 def init_db():
     """Creates the database tables if they don't exist."""
     Base.metadata.create_all(bind=engine)
+    _migrate_schema()
