@@ -1,0 +1,46 @@
+# ==================================================
+# SECURITY: Ignore all config secrets
+# ==================================================
+config/settings.json
+backend/config/settings.json
+**/settings.json
+**/settings.local.json
+**/secrets.json
+**/*credentials*.json
+
+# Allow the example template (no real credentials)
+!backend/config/settings.example.json
+!**/settings.example.json
+
+# Environment variable files
+**/.env
+.env
+.env.*
+!.env.example
+
+# ==================================================
+# DATA: Ignore local data and generated certificates
+# ==================================================
+data/
+backend/data/
+*.csv
+*.pdf
+*.db
+*.sqlite
+*.sqlite3
+
+# ==================================================
+# PYTHON: Ignore compiled and cache files
+# ==================================================
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ==================================================
+# MISC: OS and editor files
+# ==================================================
+.DS_Store
+Thumbs.db
+*.log

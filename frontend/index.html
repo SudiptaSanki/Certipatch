@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertiPatch | Professional Certificate Dispatcher</title>
+    <link rel="icon" type="image/png" href="/static/certipatch_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo-section">
+                <img src="/static/certipatch_logo.png" alt="CertiPatch Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1>CertiPatch</h1>
+                </div>
+            </div>
+            <div class="status-pill glass" id="engineStatus">
+                Engine Idle
+            </div>
+        </header>
+
+        <div class="step-container">
+            <section class="step-card animate-in" style="animation-delay: 0.1s;">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2 class="step-title">Your Sender Accounts</h2>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">Add your Gmail accounts. Each account safely sends 90 emails per day.</p>
+
+                <div class="input-group">
+                    <label class="input-label">Gmail Address</label>
+                    <input type="email" id="accEmail" placeholder="example@gmail.com">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">App Password</label>
+                    <div class="input-with-help">
+                        <input type="password" id="accPass" placeholder="16-character app password">
+                        <svg class="help-icon" onclick="showGuide()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="addAccount()">Add This Account</button>
+
+                <div id="accountList" style="margin-top: 20px;"></div>
+            </section>
+
+            <section class="step-card animate-in" style="animation-delay: 0.2s;">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2 class="step-title">Email Content</h2>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Email Subject</label>
+                    <input type="text" id="emailSubject" placeholder="Your Certificate is Ready!">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Email Body</label>
+                    <textarea id="emailBody" rows="4" placeholder="Hello {name}, your certificate is attached."></textarea>
+                    <span style="font-size: 11px; color: var(--accent-secondary);">Tip: Use {name} to include the person's name automatically.</span>
+                </div>
+                <button class="btn-secondary" onclick="saveSettings()">Save Template</button>
+            </section>
+
+            <section class="step-card animate-in" style="animation-delay: 0.3s;">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2 class="step-title">Upload & Start</h2>
+                </div>
+
+                <div style="margin-bottom: 20px; padding: 15px; background: #18181b; border-radius: 8px;">
+                    <p style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">Certificate PDF folder</p>
+                    <div id="pdfFileList" style="font-size: 12px; color: var(--text-secondary);">Loading...</div>
+                    <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label class="btn-secondary" style="font-size: 12px; cursor: pointer; display: inline-block;">
+                            Select PDF Folder
+                            <input type="file" id="pdfFolderInput" accept=".pdf" multiple webkitdirectory directory hidden onchange="uploadPdfFolder(this.files)">
+                        </label>
+                        <label class="btn-secondary" style="font-size: 12px; cursor: pointer; display: inline-block;">
+                            Add PDFs
+                            <input type="file" id="pdfUploadInput" accept=".pdf" multiple hidden onchange="uploadMorePdfs(this.files)">
+                        </label>
+                    </div>
+                </div>
+
+                <div id="dropzone" class="dropzone" onclick="document.getElementById('fileInput').click()">
+                    <svg style="width: 40px; margin-bottom: 10px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <p>Drop your Excel or CSV list here</p>
+                    <span style="font-size: 12px; color: var(--text-secondary);">System will auto-detect Name, Email, and PDF columns</span>
+                    <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" hidden onchange="handleFileUpload(this.files[0])">
+                </div>
+                <div style="text-align: center; margin-top: 10px;">
+                    <a href="#" onclick="downloadSample(event)" style="color: var(--accent-secondary); font-size: 12px; text-decoration: none;">Download Sample CSV for Testing</a>
+                </div>
+
+                <div id="columnMapping" style="display: none; margin-top: 20px; padding: 15px; border: 1px solid var(--accent-color); border-radius: 8px;">
+                    <p style="font-size: 13px; margin-bottom: 10px;">We detected these columns. Adjust if needed:</p>
+                    <div class="input-group">
+                        <label class="input-label">Name Column</label>
+                        <select id="colName"></select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Email Column</label>
+                        <select id="colEmail"></select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">PDF File Column</label>
+                        <select id="colFile"></select>
+                    </div>
+                    <button class="btn-primary" onclick="loadAndSend()">Validate Matches & Load Queue</button>
+                </div>
+
+                <div class="divider" style="margin: 20px 0; border-top: 1px solid var(--border-color);"></div>
+
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">After the file passes matching validation, click <strong>Launch Bulk Send</strong> to start.</p>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                    <button class="btn-secondary" onclick="sendTest()">Send Test to Myself</button>
+                    <button class="btn-primary" id="startBtn" onclick="toggleEngine()" style="background: var(--success-color);">Launch Bulk Send</button>
+                    <button onclick="clearCompleted()" style="color: var(--accent-secondary); background: none; border: 1px solid var(--accent-secondary); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 13px;">Clear Completed</button>
+                    <button onclick="clearQueue()" style="color: var(--error-color); background: none; border: 1px solid var(--error-color); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 13px;">Clear All</button>
+                </div>
+
+                <div class="status-grid" id="statusDisplay">
+                    <div class="status-card">
+                        <span class="status-value" id="countPending">0</span>
+                        <span class="status-label">Pending</span>
+                    </div>
+                    <div class="status-card">
+                        <span class="status-value" id="countSent" style="color: var(--success-color);">0</span>
+                        <span class="status-label">Sent</span>
+                    </div>
+                    <div class="status-card">
+                        <span class="status-value" id="countFailed" style="color: var(--error-color);">0</span>
+                        <span class="status-label">Failed</span>
+                    </div>
+                    <div class="status-card">
+                        <span class="status-value" id="countQuota" style="color: var(--accent-secondary);">—</span>
+                        <span class="status-label">Quota Left</span>
+                        <span style="font-size: 10px; color: var(--text-secondary); margin-top: 4px;" id="quotaDetail"></span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="guideModal" class="guide-modal" onclick="hideGuide()">
+        <div class="guide-content" onclick="event.stopPropagation()">
+            <h2>How to get an App Password</h2>
+            <p>1. Go to your Google Account Settings.</p>
+            <p>2. Ensure 2-Step Verification is ON.</p>
+            <p>3. Search for "App Passwords".</p>
+            <p>4. Generate one for "Mail" and "Windows/Mac".</p>
+            <a href="https://myaccount.google.com/apppasswords" target="_blank" class="guide-link">Go to Google Settings</a>
+            <br><br>
+            <button class="btn-secondary" onclick="hideGuide()">Got it</button>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

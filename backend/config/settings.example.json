@@ -1,0 +1,16 @@
+{
+  "accounts": [
+    {
+      "email": "your.project.email1@gmail.com",
+      "password": "your16letterapppassword"
+    },
+    {
+      "email": "your.project.email2@gmail.com",
+      "password": "another16letterpassword"
+    }
+  ],
+  "email_settings": {
+    "subject": "Your Certificate of Participation",
+    "body_template": "Hello {name},\n\nThank you for participating. Please find your certificate attached.\n\nBest regards,\nThe Team"
+  }
+}
