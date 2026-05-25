@@ -1,4 +1,4 @@
-# 🚀 Certipatch (Version 3)
+# 🚀 Certipatch(Version 3)
 
 Certipatch is a lightweight, high-performance Python utility designed to bulk-dispatch personalized emails with local file attachments.
 
