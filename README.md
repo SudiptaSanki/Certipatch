@@ -97,4 +97,5 @@ All database files (`*.db`), uploaded certificates (`*.pdf`), uploaded contacts 
 I would love your contribution feel free to contact I would love to work and make it bigger.
 
 ---
+
 *Release v3.0.0*
