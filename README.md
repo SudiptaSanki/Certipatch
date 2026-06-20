@@ -92,6 +92,7 @@ The batch file will automatically:
 
 All database files (`*.db`), uploaded certificates (`*.pdf`), uploaded contacts (`*.csv`), and configuration secrets (`*settings*.json`) are **ignored by Git** for your safety. Your app passwords and email lists will never be accidentally committed to GitHub.
 
+
 ## 🤝 Contributors
 - **SudiptaSanki** - Core Developer & Maintainer
 I would love your contribution feel free to contact I would love to work and make it bigger.
